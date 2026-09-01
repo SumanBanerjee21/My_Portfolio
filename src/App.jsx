@@ -5,6 +5,7 @@ import Projects from './pages/Projects';
 import About from './pages/About';
 import Certificates from './pages/Certificates';
 import Services from './pages/Services';
+import Resume from './pages/Resume';
 import HireMe from './pages/HireMe';
 import HireMeDetails from './pages/HireMeDetails';
 import VedaAIDetails from './pages/VedaAIDetails';
@@ -38,6 +39,7 @@ const Navbar = () => {
           <NavLink to="/projects" className={linkClass}>Projects</NavLink>
           <NavLink to="/certificates" className={linkClass}>Certificates</NavLink>
           <NavLink to="/services" className={linkClass}>Services</NavLink>
+          <NavLink to="/resume" className={linkClass}>Resume</NavLink>
           <NavLink to="/hire-me" className={linkClass}>Hire Me</NavLink>
         </div>
       </nav>
@@ -64,6 +66,7 @@ function App() {
             <Route path="/project/powerbi/:id" element={<PowerBIDetails />} />
             <Route path="/certificates" element={<Certificates />} />
             <Route path="/services" element={<Services />} />
+            <Route path="/resume" element={<Resume />} />
             <Route path="/hire-me" element={<HireMe />} />
             <Route path="/hire-me/:id" element={<HireMeDetails />} />
           </Routes>
