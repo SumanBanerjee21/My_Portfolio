@@ -268,7 +268,7 @@ const Projects = () => {
       shortDescription: 'Historical insights into Paralympics data.',
       description: 'Engaging visual data story built in PowerBI exploring Paralympics historical data, athlete achievements, and global participation metrics.',
       videoSrc: '', 
-      imageSrc: 'https://images.unsplash.com/photo-1569083515437-0209df323869?q=80&w=1974&auto=format&fit=crop',
+      imageSrc: 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?q=80&w=2070&auto=format&fit=crop',
       gradientClass: 'from-[#8b5cf6] to-[#5b21b6]',
       tags: [
         { name: 'PowerBI', colorClass: 'text-yellow-400 border-yellow-400/30 bg-yellow-400/10' },
