@@ -32,7 +32,9 @@ const Navbar = () => {
   return (
     <header className="sticky top-0 z-50 w-full border-b border-gray-800/20 bg-gray-950/10 backdrop-blur-md">
       <nav className="flex items-center justify-between px-8 py-4 max-w-7xl mx-auto w-full">
-        <div className="font-bold text-2xl tracking-tighter text-white">SB.</div>
+        <div className="flex items-center">
+          <img src="/logo.jpg" alt="Suman Logo" className="w-10 h-10 rounded-full border border-gray-700/50 shadow-lg" />
+        </div>
         <div className="flex gap-2 text-sm font-medium text-gray-400 items-center">
           <NavLink to="/" end className={linkClass}>Home</NavLink>
           <NavLink to="/about" className={linkClass}>About</NavLink>
