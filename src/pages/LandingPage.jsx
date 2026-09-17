@@ -11,8 +11,7 @@ const LandingPage = () => {
     '/images/Resume_Recent_Photo.png', // Professional
     '/images/1.jpg', // Casual 1
     '/images/2.jpg', // Casual 2
-    '/images/3.jpg',
-    '/images/4.jpg'
+    '/images/3.jpg'
   ];
 
   return (
