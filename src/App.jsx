@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   BrowserRouter as Router,
   Routes,
@@ -43,6 +43,7 @@ const ScrollToTop = () => {
 /* =========================================================
    SUBTLE MOUSE FOLLOW GLOW
 ========================================================= */
+
 const MouseGlow = () => {
   const glowRef = useRef(null);
   const animationFrameRef = useRef(null);
@@ -78,7 +79,8 @@ const MouseGlow = () => {
       currentX += (mouseX - currentX) * 0.16;
       currentY += (mouseY - currentY) * 0.16;
 
-      glow.style.transform = `translate3d(${currentX}px, ${currentY}px, 0)`;
+      glow.style.transform =
+        `translate3d(${currentX}px, ${currentY}px, 0)`;
 
       animationFrameRef.current =
         requestAnimationFrame(animate);
@@ -141,11 +143,18 @@ const MouseGlow = () => {
     />
   );
 };
+
+
 /* =========================================================
    NAVBAR
 ========================================================= */
 
 const Navbar = () => {
+  const location = useLocation();
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef(null);
+  const buttonRef = useRef(null);
+
   const linkClass = ({ isActive }) =>
     `transition-colors px-3 py-2 rounded-lg ${
       isActive
@@ -153,53 +162,367 @@ const Navbar = () => {
         : 'hover:text-white hover:bg-white/5'
     }`;
 
-  return (
-    <header className="sticky top-0 z-50 w-full border-b border-gray-800/20 bg-gray-950/10 backdrop-blur-md">
-      <nav className="flex items-center justify-between px-4 sm:px-6 lg:px-8 py-4 max-w-7xl mx-auto w-full">
+  const mobileLinkClass = ({ isActive }) =>
+    `block w-full px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 ${
+      isActive
+        ? 'text-white bg-white/10'
+        : 'text-gray-300 hover:text-white hover:bg-white/5'
+    }`;
 
-        <div className="flex items-center">
+  /* Close menu when route changes */
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [location.pathname]);
+
+  /* Close menu when clicking outside */
+  useEffect(() => {
+    const handleOutsideClick = (event) => {
+      if (!menuOpen) return;
+
+      if (
+        menuRef.current &&
+        !menuRef.current.contains(event.target) &&
+        buttonRef.current &&
+        !buttonRef.current.contains(event.target)
+      ) {
+        setMenuOpen(false);
+      }
+    };
+
+    document.addEventListener(
+      'mousedown',
+      handleOutsideClick
+    );
+
+    return () => {
+      document.removeEventListener(
+        'mousedown',
+        handleOutsideClick
+      );
+    };
+  }, [menuOpen]);
+
+  /* Close menu with Escape key */
+  useEffect(() => {
+    const handleEscape = (event) => {
+      if (event.key === 'Escape') {
+        setMenuOpen(false);
+      }
+    };
+
+    document.addEventListener(
+      'keydown',
+      handleEscape
+    );
+
+    return () => {
+      document.removeEventListener(
+        'keydown',
+        handleEscape
+      );
+    };
+  }, []);
+
+  return (
+    <header
+      className="
+        sticky
+        top-0
+        z-50
+        w-full
+        border-b
+        border-gray-800/20
+        bg-gray-950/80
+        backdrop-blur-md
+      "
+    >
+      <nav
+        className="
+          relative
+          flex
+          items-center
+          justify-between
+          px-4
+          sm:px-6
+          lg:px-8
+          py-4
+          max-w-7xl
+          mx-auto
+          w-full
+        "
+      >
+
+        {/* =================================================
+            LOGO
+        ================================================= */}
+
+        <NavLink
+          to="/"
+          className="flex items-center"
+          aria-label="Go to Home"
+        >
           <img
             src="/logo.png"
             alt="Suman Logo"
-            className="w-10 h-10 rounded-full border border-gray-700/50 shadow-lg"
+            className="
+              w-10
+              h-10
+              rounded-full
+              border
+              border-gray-700/50
+              shadow-lg
+            "
           />
-        </div>
+        </NavLink>
 
-        <div className="hidden md:flex gap-1 lg:gap-2 text-sm font-medium text-gray-400 items-center">
 
-          <NavLink to="/" end className={linkClass}>
+        {/* =================================================
+            DESKTOP NAVIGATION
+        ================================================= */}
+
+        <div
+          className="
+            hidden
+            md:flex
+            gap-1
+            lg:gap-2
+            text-sm
+            font-medium
+            text-gray-400
+            items-center
+          "
+        >
+
+          <NavLink
+            to="/"
+            end
+            className={linkClass}
+          >
             Home
           </NavLink>
 
-          <NavLink to="/about" className={linkClass}>
+          <NavLink
+            to="/about"
+            className={linkClass}
+          >
             About
           </NavLink>
 
-          <NavLink to="/projects" className={linkClass}>
+          <NavLink
+            to="/projects"
+            className={linkClass}
+          >
             Projects
           </NavLink>
 
-          <NavLink to="/certificates" className={linkClass}>
+          <NavLink
+            to="/certificates"
+            className={linkClass}
+          >
             Certificates
           </NavLink>
 
-          <NavLink to="/services" className={linkClass}>
+          <NavLink
+            to="/services"
+            className={linkClass}
+          >
             Services
           </NavLink>
 
-          <NavLink to="/resume" className={linkClass}>
+          <NavLink
+            to="/resume"
+            className={linkClass}
+          >
             Resume
           </NavLink>
 
-          <NavLink to="/hire-me" className={linkClass}>
+          <NavLink
+            to="/hire-me"
+            className={linkClass}
+          >
             Hire Me
           </NavLink>
 
         </div>
 
-        {/* Mobile menu indicator */}
-        <div className="md:hidden text-gray-400 text-xs">
-          Menu
+
+        {/* =================================================
+            MOBILE HAMBURGER BUTTON
+        ================================================= */}
+
+        <button
+          ref={buttonRef}
+          type="button"
+          onClick={() => setMenuOpen((prev) => !prev)}
+          aria-label={
+            menuOpen
+              ? 'Close navigation menu'
+              : 'Open navigation menu'
+          }
+          aria-expanded={menuOpen}
+          className="
+            md:hidden
+            relative
+            flex
+            flex-col
+            justify-center
+            items-center
+            gap-[5px]
+            w-11
+            h-11
+            rounded-xl
+            border
+            border-gray-800
+            bg-white/[0.03]
+            hover:bg-white/[0.07]
+            hover:border-gray-700
+            transition-all
+            duration-200
+          "
+        >
+
+          {/* Top line */}
+          <span
+            className={`
+              block
+              w-5
+              h-[2px]
+              rounded-full
+              bg-gray-300
+              transition-all
+              duration-300
+              ${
+                menuOpen
+                  ? 'translate-y-[7px] rotate-45'
+                  : ''
+              }
+            `}
+          />
+
+          {/* Middle line */}
+          <span
+            className={`
+              block
+              w-5
+              h-[2px]
+              rounded-full
+              bg-gray-300
+              transition-all
+              duration-300
+              ${
+                menuOpen
+                  ? 'opacity-0 scale-0'
+                  : 'opacity-100 scale-100'
+              }
+            `}
+          />
+
+          {/* Bottom line */}
+          <span
+            className={`
+              block
+              w-5
+              h-[2px]
+              rounded-full
+              bg-gray-300
+              transition-all
+              duration-300
+              ${
+                menuOpen
+                  ? '-translate-y-[7px] -rotate-45'
+                  : ''
+              }
+            `}
+          />
+
+        </button>
+
+
+        {/* =================================================
+            MOBILE MENU
+        ================================================= */}
+
+        <div
+          ref={menuRef}
+          className={`
+            md:hidden
+            absolute
+            top-full
+            left-4
+            right-4
+            mt-3
+            rounded-2xl
+            border
+            border-gray-800/80
+            bg-gray-950/95
+            backdrop-blur-xl
+            shadow-2xl
+            overflow-hidden
+            transition-all
+            duration-300
+            origin-top
+            ${
+              menuOpen
+                ? 'opacity-100 scale-100 translate-y-0 pointer-events-auto'
+                : 'opacity-0 scale-95 -translate-y-2 pointer-events-none'
+            }
+          `}
+        >
+
+          <div className="p-2">
+
+            <NavLink
+              to="/"
+              end
+              className={mobileLinkClass}
+            >
+              Home
+            </NavLink>
+
+            <NavLink
+              to="/about"
+              className={mobileLinkClass}
+            >
+              About
+            </NavLink>
+
+            <NavLink
+              to="/projects"
+              className={mobileLinkClass}
+            >
+              Projects
+            </NavLink>
+
+            <NavLink
+              to="/certificates"
+              className={mobileLinkClass}
+            >
+              Certificates
+            </NavLink>
+
+            <NavLink
+              to="/services"
+              className={mobileLinkClass}
+            >
+              Services
+            </NavLink>
+
+            <NavLink
+              to="/resume"
+              className={mobileLinkClass}
+            >
+              Resume
+            </NavLink>
+
+            <NavLink
+              to="/hire-me"
+              className={mobileLinkClass}
+            >
+              Hire Me
+            </NavLink>
+
+          </div>
+
         </div>
 
       </nav>
@@ -221,21 +544,51 @@ function App() {
       {/* Global mouse-follow ambient light */}
       <MouseGlow />
 
-      <div className="min-h-screen flex flex-col bg-background text-foreground relative">
+      <div
+        className="
+          min-h-screen
+          flex
+          flex-col
+          bg-background
+          text-foreground
+          relative
+        "
+      >
 
         <Navbar />
 
-        <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 relative z-10">
+        <main
+          className="
+            flex-1
+            w-full
+            max-w-7xl
+            mx-auto
+            px-4
+            sm:px-6
+            lg:px-8
+            py-8
+            sm:py-12
+            relative
+            z-10
+          "
+        >
 
           <Routes>
 
-            {/* Home */}
+            {/* =================================================
+                HOME
+            ================================================= */}
+
             <Route
               path="/"
               element={<LandingPage />}
             />
 
-            {/* Main Pages */}
+
+            {/* =================================================
+                MAIN PAGES
+            ================================================= */}
+
             <Route
               path="/about"
               element={<About />}
@@ -271,7 +624,11 @@ function App() {
               element={<HireMeDetails />}
             />
 
-            {/* Project Details */}
+
+            {/* =================================================
+                PROJECT DETAILS
+            ================================================= */}
+
             <Route
               path="/project/veda-ai"
               element={<VedaAIDetails />}
